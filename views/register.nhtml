@@ -12,20 +12,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@@9..40,400;9..40,500;9..40,600&family=Plus+Jakarta+Sans:wght@@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/noliae.css">
+  <style>.brand img{width:42px;height:30px;object-fit:contain}.welcome-copy h1 [data-brand-name]{color:var(--pulse-ink)}</style>
 </head>
 <body>
   <main class="registration-shell">
-    <aside class="welcome-panel" aria-label="Présentation Noliae">
-      <a class="brand" href="https://noliae.com" aria-label="Noliae, accueil">
-        <svg viewBox="0 0 140 100" aria-hidden="true"><rect x="12" y="35" width="10" height="30" rx="5"/><rect x="30" y="25" width="10" height="50" rx="5"/><rect x="48" y="15" width="10" height="70" rx="5"/><rect class="pulse" x="66" y="22" width="10" height="56" rx="5"/><rect x="84" y="20" width="10" height="60" rx="5"/><rect x="102" y="30" width="10" height="40" rx="5"/><rect x="120" y="35" width="10" height="30" rx="5"/></svg>
-        <span>noliae</span>
+    <aside class="welcome-panel" aria-label="Présentation de l’instance">
+      <a class="brand" href="/" aria-label="Accueil">
+        <img id="brand-logo" alt="" hidden>
+        <span data-brand-name>NolCore</span>
       </a>
       <div class="welcome-copy">
-        <p class="eyebrow">Votre espace Noliae</p>
-        <h1>Bienvenue<br>chez Noliae.</h1>
-        <p>Un compte unique pour Search, IA et les services qui composent votre quotidien.</p>
+        <p class="eyebrow">Votre espace</p>
+        <h1>Bienvenue<br>chez <span data-brand-name>NolCore</span>.</h1>
+        <p>Un compte unique pour vos services et vos espaces connectés.</p>
         <div class="features">
-          <article><span class="feature-icon">✦</span><span><b>Un accès unifié</b><small>Votre session suit vos services Noliae.</small></span></article>
+          <article><span class="feature-icon">✦</span><span><b>Un accès unifié</b><small>Votre session suit vos services configurés.</small></span></article>
           <article><span class="feature-icon">⌁</span><span><b>Vos données, vos règles</b><small>Permissions et sécurité gérées par NolCore.</small></span></article>
           <article><span class="feature-icon">◌</span><span><b>Prêt pour la suite</b><small>Commencez simplement, sans engagement.</small></span></article>
         </div>
@@ -36,17 +37,66 @@
       <header class="form-top"><span class="step"><b>1</b> Votre compte</span><p>Déjà membre ? <a href="https://login.noliae.com">Se connecter <span>→</span></a></p></header>
       <div class="form-stage">
         <div class="form-heading"><p class="eyebrow">Créer un compte</p><h2>On fait connaissance.</h2><p>Quelques informations suffisent pour démarrer.</p></div>
-        <form action="/v1/user/register" method="post">
+        <form id="register-form" novalidate>
           <label>Nom complet<input name="name" autocomplete="name" placeholder="Votre nom" required></label>
           <label>Adresse e-mail<input type="email" name="email" autocomplete="email" placeholder="vous@@example.com" required></label>
           <label>Mot de passe<input type="password" name="password" autocomplete="new-password" minlength="8" placeholder="8 caractères minimum" required></label>
-          <p class="form-notice">En créant votre compte, vous acceptez les conditions d’utilisation de Noliae.</p>
+          <p class="form-notice">En créant votre compte, vous acceptez les conditions d’utilisation de cette instance.</p>
           <button type="submit">Créer mon compte <span>→</span></button>
         </form>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
         <p class="mobile-login">Déjà membre ? <a href="https://login.noliae.com">Se connecter</a></p>
       </div>
-      <footer class="form-footer"><span>© Noliae</span><span>Chiffrement et sessions sécurisées</span></footer>
+      <footer class="form-footer"><span>© <span data-brand-name>NolCore</span></span><span>Chiffrement et sessions sécurisées</span></footer>
     </section>
   </main>
+  <script>
+    const form = document.getElementById("register-form");
+    const status = document.getElementById("form-status");
+    const apiOrigin = () => {
+      const host = window.location.hostname;
+      if (host.startsWith("register.")) return window.location.protocol + "//api." + host.slice(9);
+      return window.location.origin;
+    };
+    const loadBranding = async () => {
+      try {
+        const response = await fetch(apiOrigin() + "/v1/branding");
+        if (!response.ok) return;
+        const brand = await response.json();
+        const name = brand.name || "NolCore";
+        document.querySelectorAll("[data-brand-name]").forEach((node) => node.textContent = name);
+        document.title = "Créer un compte — " + name;
+        if (brand.website_url) document.querySelector(".brand").href = brand.website_url;
+        if (brand.logo_url) {
+          const logo = document.getElementById("brand-logo");
+          logo.src = brand.logo_url;
+          logo.hidden = false;
+        }
+      } catch (_) { /* repli neutre : NolCore */ }
+    };
+    loadBranding();
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const button = form.querySelector("button[type=submit]");
+      button.disabled = true;
+      status.textContent = "Création sécurisée de votre compte…";
+      try {
+        const response = await fetch(apiOrigin() + "/v1/user/register", {
+          method: "POST", credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.detail || "Impossible de créer le compte.");
+        status.className = "form-status success";
+        status.textContent = "Compte créé. Vérifiez votre e-mail avant de vous connecter.";
+      } catch (error) {
+        status.className = "form-status error";
+        status.textContent = error.message || "Une erreur est survenue. Réessayez.";
+        button.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
