@@ -34,7 +34,7 @@
       <p class="panel-note"><i></i> Session sécurisée par NolCore</p>
     </aside>
     <section class="form-panel">
-      <header class="form-top"><span class="step"><b>1</b> Votre compte</span><p>Déjà membre ? <a href="https://login.noliae.com">Se connecter <span>→</span></a></p></header>
+      <header class="form-top"><span class="step"><b>1</b> Votre compte</span><p>Déjà membre ? <a data-url="login_url" href="/">Se connecter <span>→</span></a></p></header>
       <div class="form-stage">
         <div class="form-heading"><p class="eyebrow">Créer un compte</p><h2>On fait connaissance.</h2><p>Quelques informations suffisent pour démarrer.</p></div>
         <form id="register-form" novalidate>
@@ -45,7 +45,7 @@
           <button type="submit">Créer mon compte <span>→</span></button>
         </form>
         <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-        <p class="mobile-login">Déjà membre ? <a href="https://login.noliae.com">Se connecter</a></p>
+        <p class="mobile-login">Déjà membre ? <a data-url="login_url" href="/">Se connecter</a></p>
       </div>
       <footer class="form-footer"><span>© <span data-brand-name>NolCore</span></span><span>Chiffrement et sessions sécurisées</span></footer>
     </section>
@@ -67,6 +67,10 @@
         document.querySelectorAll("[data-brand-name]").forEach((node) => node.textContent = name);
         document.title = "Créer un compte — " + name;
         if (brand.website_url) document.querySelector(".brand").href = brand.website_url;
+        document.querySelectorAll("[data-url]").forEach((link) => {
+          const url = brand[link.dataset.url];
+          if (url) link.href = url;
+        });
         if (brand.logo_url) {
           const logo = document.getElementById("brand-logo");
           logo.src = brand.logo_url;
