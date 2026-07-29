@@ -20,7 +20,7 @@ register.noliae.com → reverse proxy → NolCore /v1/user/register → PostgreS
 ```
 
 Le Core hache les mots de passe avec Argon2id, envoie l’éventuel e-mail de
-vérification et crée les sessions. Cette interface est `noindex,nofollow` et
+vérification et crée les sessions après connexion. Cette interface est `noindex,nofollow` et
 envoie le formulaire uniquement vers le reverse proxy NolCore.
 
 En production, configurez `NOLIAE_COOKIE_DOMAIN=.noliae.com`,
