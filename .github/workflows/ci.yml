@@ -1,0 +1,14 @@
+name: Register Nolc CI
+on: {push: {branches: [main]}}
+permissions: {contents: read, packages: write}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t noliae-register .
+      - run: docker run -d --name app -p 8083:8080 noliae-register && sleep 2 && curl -fsS http://localhost:8083/api/health | grep -q nolc && docker rm -f app
+      - uses: docker/login-action@v3
+        with: {registry: ghcr.io, username: ${{ github.actor }}, password: ${{ secrets.GITHUB_TOKEN }}}
+      - uses: docker/build-push-action@v6
+        with: {context: ., push: true, tags: ghcr.io/noliae-france/noliae-register:main}
