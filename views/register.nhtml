@@ -17,24 +17,24 @@
 <body>
   <main class="registration-shell">
     <aside class="welcome-panel" aria-label="Présentation de l’instance">
-      <a class="brand" href="/" aria-label="Accueil">
+      <a class="brand" data-app="search" href="/" aria-label="Accueil">
         <img id="brand-logo" alt="" hidden>
-        <span data-brand-name>NolCore</span>
+        <span data-brand>Noliae</span>
       </a>
       <div class="welcome-copy">
         <p class="eyebrow">Votre espace</p>
-        <h1>Bienvenue<br>chez <span data-brand-name>NolCore</span>.</h1>
+        <h1>Bienvenue<br>chez <span data-brand>Noliae</span>.</h1>
         <p>Un compte unique pour vos services et vos espaces connectés.</p>
         <div class="features">
           <article><span class="feature-icon">✦</span><span><b>Un accès unifié</b><small>Votre session suit vos services configurés.</small></span></article>
-          <article><span class="feature-icon">⌁</span><span><b>Vos données, vos règles</b><small>Permissions et sécurité gérées par NolCore.</small></span></article>
+          <article><span class="feature-icon">⌁</span><span><b>Vos données, vos règles</b><small>Permissions et sécurité gérées côté serveur.</small></span></article>
           <article><span class="feature-icon">◌</span><span><b>Prêt pour la suite</b><small>Commencez simplement, sans engagement.</small></span></article>
         </div>
       </div>
-      <p class="panel-note"><i></i> Session sécurisée par NolCore</p>
+      <p class="panel-note"><i></i> Session sécurisée côté serveur</p>
     </aside>
     <section class="form-panel">
-      <header class="form-top"><span class="step"><b>1</b> Votre compte</span><p>Déjà membre ? <a data-url="login_url" href="/">Se connecter <span>→</span></a></p></header>
+      <header class="form-top"><span class="step"><b>1</b> Votre compte</span><p>Déjà membre ? <a data-app="login" href="/">Se connecter <span>→</span></a></p></header>
       <div class="form-stage">
         <div class="form-heading"><p class="eyebrow">Créer un compte</p><h2>On fait connaissance.</h2><p>Quelques informations suffisent pour démarrer.</p></div>
         <form id="register-form" novalidate>
@@ -45,9 +45,9 @@
           <button type="submit">Créer mon compte <span>→</span></button>
         </form>
         <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-        <p class="mobile-login">Déjà membre ? <a data-url="login_url" href="/">Se connecter</a></p>
+        <p class="mobile-login">Déjà membre ? <a data-app="login" href="/">Se connecter</a></p>
       </div>
-      <footer class="form-footer"><span>© <span data-brand-name>NolCore</span></span><span>Chiffrement et sessions sécurisées</span></footer>
+      <footer class="form-footer"><span>© <span data-brand>Noliae</span></span><span>Chiffrement et sessions sécurisées</span></footer>
     </section>
   </main>
   <script>
@@ -63,14 +63,10 @@
         const response = await fetch(apiOrigin() + "/v1/branding");
         if (!response.ok) return;
         const brand = await response.json();
-        const name = brand.name || "NolCore";
-        document.querySelectorAll("[data-brand-name]").forEach((node) => node.textContent = name);
+        const name = brand.name === "NolCore" ? "Noliae" : (brand.name || "Noliae");
+        document.querySelectorAll("[data-brand]").forEach((node) => node.textContent = name);
         document.title = "Créer un compte — " + name;
         if (brand.website_url) document.querySelector(".brand").href = brand.website_url;
-        document.querySelectorAll("[data-url]").forEach((link) => {
-          const url = brand[link.dataset.url];
-          if (url) link.href = url;
-        });
         if (brand.logo_url) {
           const logo = document.getElementById("brand-logo");
           logo.src = brand.logo_url;
