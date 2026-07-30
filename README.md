@@ -27,6 +27,9 @@ En production, configurez `NOLIAE_COOKIE_DOMAIN=.noliae.com`,
 `NOLIAE_COOKIE_SECURE=true` et HTTPS : le cookie `nol_session` reste
 `HttpOnly`, `SameSite=Lax`, signé, lié à l’IP et valable 24 h.
 
+Le lien « Se connecter » conserve le même environnement de déploiement :
+`register.beta.noliae.com` cible `login.beta.noliae.com` automatiquement.
+
 ## Développement
 
 ```sh
