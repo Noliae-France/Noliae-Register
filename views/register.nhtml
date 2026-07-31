@@ -7,10 +7,7 @@
   <meta name="theme-color" content="#FF5A36">
   <title>@titre</title>
   <meta name="description" content="Créez votre compte Noliae pour accéder à Search, IA et vos services.">
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@@9..40,400;9..40,500;9..40,600&family=Plus+Jakarta+Sans:wght@@500;600;700&display=swap" rel="stylesheet">
+  <meta name="robots" content="noindex,nofollow">  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@@9..40,400;9..40,500;9..40,600&family=Plus+Jakarta+Sans:wght@@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/noliae.css">
   <style>.brand img{width:42px;height:30px;object-fit:contain}.welcome-copy h1 [data-brand-name]{color:var(--pulse-ink)}</style>
 </head>
