@@ -90,7 +90,9 @@
         status.textContent = "Compte créé. Vérifiez votre e-mail avant de vous connecter.";
       } catch (error) {
         status.className = "form-status error";
-        status.textContent = error.message || "Une erreur est survenue. Réessayez.";
+        status.textContent = (error instanceof TypeError)
+          ? "La connexion à nos serveurs semble bloquée par une extension (bloqueur de publicités/traceurs). Désactive-la pour ce site, ou essaie en navigation privée, puis réessaie."
+          : (error.message || "Une erreur est survenue. Réessayez.");
         button.disabled = false;
       }
     });
